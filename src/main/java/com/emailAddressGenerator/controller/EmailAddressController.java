@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(value = "/emailAddressGenerator/v1/")
 public class EmailAddressController {
 
-    private static final Logger log = Logger.getLogger(EmailAddressController.class);
+    private static final Logger LOG = Logger.getLogger(EmailAddressController.class);
 
     private final EmailAddressService emailAddressService;
 
@@ -30,20 +30,20 @@ public class EmailAddressController {
 
     @PostMapping
     public ResponseEntity<String> readNames(@RequestParam("file") MultipartFile multipartFile) {
-        log.info("post file called");
+        LOG.info("post file called");
 
         if (null == multipartFile.getOriginalFilename()) {
-            log.error("multipartFile is incorrect");
+            LOG.error("multipartFile is incorrect");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try {
             emailAddressService.saveEmailNames(multipartFile);
-            log.info("file loaded");
+            LOG.info("file loaded");
 
             return new ResponseEntity<>("Names recieved", HttpStatus.OK);
         } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
 
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -51,7 +51,7 @@ public class EmailAddressController {
 
     @GetMapping
     public ResponseEntity getEmailAddress() {
-        log.info("get emails called");
+        LOG.info("get emails called");
         List<String> emailNames = emailAddressService.getEmailAddresses();
 
         return new ResponseEntity(emailNames, HttpStatus.OK);
@@ -59,14 +59,14 @@ public class EmailAddressController {
 
     @DeleteMapping
     public ResponseEntity cleanEmailAddress() {
-        log.info("delete saved emails called");
+        LOG.info("delete saved emails called");
 
         try {
             emailAddressService.cleanEmailAddress();
 
             return new ResponseEntity<>("Names deleted", HttpStatus.OK);
         } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
 
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmailAddressService {
 
-    private static final Logger log = Logger.getLogger(EmailAddressService.class);
+    private static final Logger LOG = Logger.getLogger(EmailAddressService.class);
 
     private List<EmailName> emailNames = new LinkedList();
 
@@ -34,7 +34,7 @@ public class EmailAddressService {
 
     @PostConstruct
     public void loadSavedNamesFromFile() {
-        log.info("initial loading of saved files");
+        LOG.info("initial loading of saved files");
         try {
             File initialFile = new File(SAVED_NAMES_FILE);
             if (initialFile.exists()) {
@@ -44,7 +44,7 @@ public class EmailAddressService {
                         .forEach(this::handleName);
             }
         } catch (IOException exception) {
-            log.error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
         }
     }
 
@@ -54,9 +54,9 @@ public class EmailAddressService {
             for (EmailName emailName : emailNames) {
                 writer.write(concatDuplicationNumber(emailName).concat(System.lineSeparator()));
             }
-            log.info("names saved to file");
+            LOG.info("names saved to file");
         } catch (IOException exception) {
-            log.error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
         }
     }
 
@@ -67,7 +67,7 @@ public class EmailAddressService {
                     .lines()
                     .forEach(this::handleName);
         } catch (IOException exception) {
-            log.error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
             throw new RuntimeException("");
         }
     }
@@ -119,7 +119,7 @@ public class EmailAddressService {
         File initialFile = new File(SAVED_NAMES_FILE);
         if (initialFile.exists()) {
             if (!initialFile.delete()) {
-                log.error("Can not delete saved file");
+                LOG.error("Can not delete saved file");
             }
         }
     }
