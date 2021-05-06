@@ -1,9 +1,11 @@
 package com.emailAddressGenerator.controller;
 
 import com.emailAddressGenerator.service.EmailAddressService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,8 @@ import java.util.List;
 @RequestMapping(value = "/emailAddressGenerator/v1/")
 public class EmailAddressController {
 
+    private static final Logger log = Logger.getLogger(EmailAddressController.class);
+
     private final EmailAddressService emailAddressService;
 
     @Autowired
@@ -26,26 +30,45 @@ public class EmailAddressController {
 
     @PostMapping
     public ResponseEntity<String> readNames(@RequestParam("file") MultipartFile multipartFile) {
+        log.info("post file called");
+
         if (null == multipartFile.getOriginalFilename()) {
+            log.error("multipartFile is incorrect");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try {
-            emailAddressService.saveEmailNames(multipartFile) ;
+            emailAddressService.saveEmailNames(multipartFile);
+            log.info("file loaded");
 
             return new ResponseEntity<>("Names recieved", HttpStatus.OK);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
 
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping
     public ResponseEntity getEmailAddress() {
+        log.info("get emails called");
         List<String> emailNames = emailAddressService.getEmailAddresses();
-        ResponseEntity responseEntity = new ResponseEntity(emailNames, HttpStatus.OK);
 
-        return  responseEntity;
+        return new ResponseEntity(emailNames, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity cleanEmailAddress() {
+        log.info("delete saved emails called");
+
+        try {
+            emailAddressService.cleanEmailAddress();
+
+            return new ResponseEntity<>("Names deleted", HttpStatus.OK);
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
