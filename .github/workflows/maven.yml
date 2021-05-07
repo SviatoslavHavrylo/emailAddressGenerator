@@ -38,5 +38,5 @@ jobs:
           username: root
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            whoami
-            ls -al
+            echo ${{ secrets.TOKEN }} | docker login https://docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+            docker run -d -p 5000:5000 sviatoslavhavrylo/emailaddressgenerator/app_api
