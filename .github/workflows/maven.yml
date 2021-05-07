@@ -40,4 +40,5 @@ jobs:
           script: |
             echo ${{ secrets.TOKEN }} | docker login https://docker.pkg.github.com -u ${{ github.actor }} --password-stdin
             docker stop apiemailgenerator || true
+            docker rm apiemailgenerator
             docker run --name apiemailgenerator -d -p 5000:5000 docker.pkg.github.com/sviatoslavhavrylo/emailaddressgenerator/app_api
