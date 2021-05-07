@@ -31,11 +31,6 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-  deploy:
-
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
       - name: deploy image
         uses: appleboy/ssh-action@master
         with:
